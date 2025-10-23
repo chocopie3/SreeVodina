@@ -2,43 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Virtually Yours — Entry Portal</title>
-  <link rel="stylesheet" href="assets/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Example Site</title>
+  <!-- Link to stylesheet in assets/css -->
+  <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body class="portal">
-  <div class="overlay">
-    <div class="portal-card">
-      <div id="birthdayBanner" class="banner">HAPPY 18TH BIRTHDAY 🎂</div>
+<body>
+  <header>
+    <img src="assets/images/logo.png" alt="Logo" id="logo" width="150" />
+    <h1>Welcome</h1>
+  </header>
 
-      <div class="portal-top">
-        <div class="photo-frame" id="photoFrame">
-          <img src="images/profile.jpg" alt="photo" />
-        </div>
+  <main>
+    <p>This page demonstrates linking CSS, JS, and images inside an assets folder.</p>
+    <button id="clickMe">Click me</button>
+  </main>
 
-        <div class="portal-text">
-          <h1>Welcome to your digital birthday vault 🎉</h1>
-          <p class="tag">A secret birthday adventure — click below to enter.</p>
-        </div>
-      </div>
-
-      <div class="controls">
-        <button id="enterBtn" class="btn primary">Enter (if you dare 😏)</button>
-      </div>
-    </div>
-  </div>
-
-  <audio id="bgAudio" loop>
-    <!-- Placeholder: Replace src with a local mp3 or hosted file -->
-    <source src="happy_birthday_song.mp3" type="audio/mpeg">
-  </audio>
-
-  <canvas id="confettiCanvas" class="confetti"></canvas>
-
-  <script src="assets/script.js"></script>
-</body>
-</html>
-      <span id="closeWallpapers" class="close" style="cursor:pointer;">&times;</span>
-    <script src="assets/script.js"></script>
+  <!-- Link to JS in assets/js; use `defer` so script doesn't block rendering -->
+  <script src="assets/js/main.js" defer></script>
 </body>
 </html>
