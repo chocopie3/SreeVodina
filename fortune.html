@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Fortune Cookies 🥠</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    body {
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Segoe UI', 'Arial', sans-serif;
+      background: linear-gradient(120deg, #fffbe6 0%, #f8e7c6 50%, #e7d6ff 100%);
+      overflow: hidden;
+      position: relative;
+    }
+    .fortune-container {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh;
+      position: relative;
+    }
+    .fortune-title {
+      font-size: 2em; color: #c77d2c; margin-bottom: 18px; text-shadow: 0 2px 12px #fff;
+      font-weight: 700;
+    }
+    .fortune-ending {
+      position: absolute; top: 32px; left: 50%; transform: translateX(-50%);
+      font-size: 1.15em; color: #b57edc; font-weight: 600; text-shadow: 0 2px 12px #fff;
+      opacity: 0; transition: opacity 2s;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .fortune-ending.active {
+      opacity: 1;
+      animation: endingGlow 2.5s;
+    }
+    @keyframes endingGlow {
+      0% { filter: brightness(1.2);}
+      50% { filter: brightness(1.5);}
+      100% { filter: brightness(1.2);}
+    }
+    .bowl-area {
+      position: relative; width: 320px; height: 220px; margin-bottom: 32px;
+      display: flex; align-items: flex-end; justify-content: center;
+    }
+    .bowl {
+      position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 220px; height: 80px;
+      background: radial-gradient(circle at 60% 30%, #fffbe6 0%, #f8e7c6 80%, #e7d6ff 100%);
+      border-radius: 0 0 110px 110px / 0 0 80px 80px;
+      box-shadow: 0 8px 32px #e7d6ff88, 0 0 0 8px #fff3;
+      border: 4px solid #e7d6ff;
+      z-index: 2;
+      animation: bowlGlow 3s infinite linear;
+    }
+    @keyframes bowlGlow {
+      0% { box-shadow: 0 8px 32px #e7d6ff88, 0 0 0 8px #fff3;}
+      50% { box-shadow: 0 8px 48px #f8e7c6bb, 0 0 0 12px #fff6;}
+      100% { box-shadow: 0 8px 32px #e7d6ff88, 0 0 0 8px #fff3;}
+    }
+    .cookie {
+      position: absolute; left: 50%; bottom: 60px; transform: translateX(-50%);
+      width: 70px; height: 50px; cursor: pointer; z-index: 3;
+      transition: transform 0.2s;
+      animation: wiggle 2.2s infinite;
+      filter: drop-shadow(0 2px 8px #c77d2c44);
+    }
+    @keyframes wiggle {
+      0% { transform: translateX(-50%) rotate(-5deg);}
+      50% { transform: translateX(-50%) rotate(7deg);}
+      100% { transform: translateX(-50%) rotate(-5deg);}
+    }
+    .cookie.cracked {
+      animation: none;
+      transform: translateX(-50%) scale(1.1) rotate(0deg);
+    }
+    .crumbs {
+      position: absolute; left: 50%; bottom: 60px; transform: translateX(-50%);
+      pointer-events: none; z-index: 4;
+    }
+    .fortune-strip {
+      position: absolute; left: 50%; bottom: 120px; transform: translateX(-50%);
+      min-width: 180px; max-width: 240px; padding: 12px 18px;
+      background: linear-gradient(90deg, #fffbe6 0%, #f8e7c6 100%);
+      border-radius: 18px; box-shadow: 0 2px 18px #e7d6ff88;
+      color: #c77d2c; font-size: 1.08em; font-weight: 600; text-align: center;
+      opacity: 0; transition: opacity 0.7s, filter 0.5s;
+      z-index: 5;
+      animation: stripUnfold 1.2s;
+    }
+    .fortune-strip.active {
+      opacity: 1;
+      filter: brightness(1.2) drop-shadow(0 0 8px #fff6);
+    }
+    @keyframes stripUnfold {
+      0% { transform: translateX(-50%) scaleY(0.2);}
+      60% { transform: translateX(-50%) scaleY(1.1);}
+      100% { transform: translateX(-50%) scaleY(1);}
+    }
+    .sparkle-canvas {
+      position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; z-index: 6;
+    }
+    .fortune-counter {
+      position: absolute; bottom: 32px; right: 32px; font-size: 1em; color: #b57edc; font-weight: 600;
+      background: #fffbe6cc; border-radius: 12px; padding: 6px 14px; box-shadow: 0 2px 8px #e7d6ff44;
+      z-index: 10;
+    }
+    .fortune-note {
+      position: absolute; top: 32px; right: 32px; font-size: 0.98em; color: #c77d2c; font-style: italic;
+      opacity: 0.7; z-index: 10;
+    }
+    .fortune-back {
+      margin-top: 38px;
+    }
+  </style>
+</head>
+<body>
+  <div class="fortune-container">
+    <div class="fortune-title">🥠 Fortune Cookies</div>
+    <div class="fortune-ending" id="fortuneEnding">Fortune favors the chaotic. You’re in luck.</div>
+    <div class="bowl-area">
+      <div class="bowl"></div>
+      <svg class="cookie" id="cookie" viewBox="0 0 70 50">
+        <path d="M10 25 Q35 0 60 25 Q35 50 10 25 Z" fill="#f8e7c6" stroke="#c77d2c" stroke-width="2"/>
+        <ellipse cx="35" cy="25" rx="18" ry="10" fill="#fffbe6" opacity="0.3"/>
+      </svg>
+      <div class="crumbs" id="crumbs"></div>
+      <div class="fortune-strip" id="fortuneStrip"></div>
+      <canvas id="sparkleCanvas" class="sparkle-canvas"></canvas>
+    </div>
+    <div class="fortune-note">Fortunes are unlimited. Self-control isn’t.</div>
+    <div class="fortune-counter" id="fortuneCounter">Cookies cracked: 0 | Fortunes absorbed: infinite</div>
+    <div class="fortune-music">Ambient music playing...</div>
+    <a href="giftroom.html" class="btn fortune-back">&#8592; Back to Gift Room</a>
+    <audio id="fortuneAudio" src="https://cdn.pixabay.com/audio/2022/10/16/audio_12b7b8b7b7.mp3" loop autoplay></audio>
+  </div>
+  <script>
+    // Fortunes
+    const fortunes = [
+      // Funny/Sarcastic
+      "Your future looks bright. Possibly because your phone’s on max brightness.",
+      "The universe says: drink some water, adult.",
+      "You will soon realize taxes are not optional.",
+      "Tomorrow holds great things — like snacks.",
+      "You’re 18 now, which means… still no one knows what they’re doing.",
+      "Good news: you’re unstoppable. Bad news: so is adulthood.",
+      "Your vibe will confuse people — in a good way.",
+      "One word for your future: slay.",
+      // Sweet/Thoughtful
+      "The next chapter starts with you laughing, not stressing.",
+      "You’re about to glow in ways that screenshots can’t capture.",
+      "You’ll find peace in small moments — and probably memes.",
+      "Someone out there’s proud of how far you’ve come (spoiler: it’s everyone).",
+      "A door will open soon. Hopefully it’s not just the fridge.",
+      // Rare/Easter egg
+      { text: "You just got a rare one. Go buy a lottery ticket. Or don’t.", rare: true },
+      { text: "Special cookie: Find the secret page!", rare: true, link: "secret.html" }
+    ];
+    let cracked = 0;
+    const cookie = document.getElementById('cookie');
+    const fortuneStrip = document.getElementById('fortuneStrip');
+    const crumbs = document.getElementById('crumbs');
+    const fortuneCounter = document.getElementById('fortuneCounter');
+    const fortuneEnding = document.getElementById('fortuneEnding');
+    let rareShown = false;
+
+    // Sparkle particles
+    const canvas = document.getElementById('sparkleCanvas');
+    const ctx = canvas.getContext('2d');
+    function resizeCanvas() {
+      canvas.width = 320;
+      canvas.height = 220;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    let sparkles = [];
+    function spawnSparkle() {
+      sparkles.push({
+        x: Math.random()*canvas.width,
+        y: canvas.height-10,
+        r: Math.random()*2+1,
+        vy: -Math.random()*1.5-0.5,
+        alpha: 1,
+        color: `hsl(${Math.random()*360},80%,80%)`
+      });
+    }
+    function drawSparkles() {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      for (let s of sparkles) {
+        ctx.globalAlpha = s.alpha;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, 2*Math.PI);
+        ctx.fillStyle = s.color;
+        ctx.fill();
+        s.y += s.vy;
+        s.alpha -= 0.012;
+      }
+      sparkles = sparkles.filter(s => s.alpha > 0);
+      if (Math.random() < 0.18) spawnSparkle();
+      requestAnimationFrame(drawSparkles);
+    }
+    drawSparkles();
+
+    // Cookie crack animation
+    function showCrumbs() {
+      crumbs.innerHTML = '';
+      for (let i = 0; i < 8; i++) {
+        const c = document.createElement('div');
+        c.style.position = 'absolute';
+        c.style.width = c.style.height = (Math.random()*6+4)+'px';
+        c.style.background = '#f8e7c6';
+        c.style.borderRadius = '50%';
+        c.style.left = (35 + Math.random()*30-15) + 'px';
+        c.style.top = (20 + Math.random()*20-10) + 'px';
+        c.style.opacity = 0.7;
+        c.style.boxShadow = '0 1px 4px #c77d2c44';
+        crumbs.appendChild(c);
+        setTimeout(()=>{ c.style.opacity = 0; }, 700+Math.random()*400);
+      }
+      setTimeout(()=>{ crumbs.innerHTML = ''; }, 1200);
+    }
+
+    // Fortune logic
+    function crackCookie() {
+      if (cookie.classList.contains('cracked')) return;
+      cracked++;
+      cookie.classList.add('cracked');
+      showCrumbs();
+      let fortune;
+      // Rare fortune logic
+      if (!rareShown && Math.random() < 0.13) {
+        fortune = fortunes.filter(f=>typeof f==='object'&&f.rare)[Math.floor(Math.random()*2)];
+        rareShown = true;
+      } else {
+        let pool = fortunes.filter(f=>typeof f==='string');
+        fortune = pool[Math.floor(Math.random()*pool.length)];
+      }
+      fortuneStrip.classList.remove('active');
+      setTimeout(() => {
+        if (typeof fortune === 'object' && fortune.link) {
+          fortuneStrip.innerHTML = `<span style="color:#d4af37;">${fortune.text}</span><br><a href="${fortune.link}" class="btn" style="margin-top:8px;">Go to Secret Gift</a>`;
+        } else if (typeof fortune === 'object' && fortune.rare) {
+          fortuneStrip.innerHTML = `<span style="color:#d4af37;">${fortune.text}</span>`;
+        } else {
+          fortuneStrip.textContent = fortune;
+        }
+        fortuneStrip.classList.add('active');
+        // Sparkle sound
+        let sparkle = new Audio("https://cdn.pixabay.com/audio/2022/03/15/audio_3c2e3d7a7e.mp3");
+        sparkle.volume = 0.3;
+        sparkle.play().catch(()=>{});
+        // Hide after 2.5s
+        setTimeout(() => {
+          fortuneStrip.classList.remove('active');
+          // Giggle sound
+          let giggle = new Audio("https://cdn.pixabay.com/audio/2022/03/15/audio_3c2e3d7a7e.mp3");
+          giggle.volume = 0.15;
+          giggle.play().catch(()=>{});
+          cookie.classList.remove('cracked');
+          fortuneStrip.textContent = '';
+          fortuneStrip.innerHTML = '';
+        }, 2500);
+      }, 600);
+      fortuneCounter.textContent = `Cookies cracked: ${cracked} | Fortunes absorbed: infinite`;
+      // Ending message after 7
+      if (cracked === 7) {
+        setTimeout(() => {
+          fortuneEnding.classList.add('active');
+          document.querySelector('.bowl').style.boxShadow = "0 8px 60px #b57edc88, 0 0 0 16px #fff6";
+        }, 1800);
+      }
+    }
+    cookie.onclick = crackCookie;
+
+    // Music autoplay/fade
+    const audio = document.getElementById('fortuneAudio');
+    audio.volume = 0.7;
+    audio.play().catch(()=>{});
+  </script>
+</body>
+</html>

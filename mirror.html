@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Virtual Mirror 🪩</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    body {
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Segoe UI', 'Arial', sans-serif;
+      background: linear-gradient(120deg, #d6caff 0%, #f8c6e7 50%, #c6e7f8 100%);
+      overflow: hidden;
+    }
+    .mirror-container {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh;
+      position: relative;
+    }
+    .mirror-frame {
+      position: relative;
+      width: 260px; height: 480px;
+      border-radius: 40px;
+      background: linear-gradient(120deg, #e3e3e3 0%, #b8b8b8 100%);
+      box-shadow: 0 0 60px 10px #e7d6ff, 0 0 0 8px #fff3;
+      border: 4px solid #e7d6ff;
+      overflow: hidden;
+      margin-bottom: 24px;
+      animation: shine 2.5s infinite linear;
+    }
+    @keyframes shine {
+      0% { box-shadow: 0 0 60px 10px #e7d6ff, 0 0 0 8px #fff3; }
+      50% { box-shadow: 0 0 80px 18px #f8c6e7, 0 0 0 12px #fff6; }
+      100% { box-shadow: 0 0 60px 10px #e7d6ff, 0 0 0 8px #fff3; }
+    }
+    .mirror-reflection {
+      position: absolute;
+      left: 18px; top: 18px;
+      width: 224px; height: 444px;
+      border-radius: 32px;
+      background: radial-gradient(circle at 60% 30%, #fff8fc 0%, #e3e3ff 40%, #f8c6e7 80%, #c6e7f8 100%);
+      box-shadow: 0 0 40px 10px #fff3 inset;
+      overflow: hidden;
+      z-index: 2;
+      animation: ripple 4s infinite linear;
+    }
+    @keyframes ripple {
+      0% { filter: blur(0.5px) brightness(1); }
+      20% { filter: blur(1.5px) brightness(1.05); }
+      40% { filter: blur(2px) brightness(1.1); }
+      60% { filter: blur(1.5px) brightness(1.05);}
+      80% { filter: blur(0.5px) brightness(1);}
+      100% { filter: blur(0.5px) brightness(1);}
+    }
+    .mirror-message {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      text-align: center;
+      font-size: 1.25em;
+      color: #7c4fd1;
+      font-weight: 600;
+      text-shadow: 0 2px 12px #fff, 0 0 2px #c6e7f8;
+      z-index: 3;
+      opacity: 0;
+      transition: opacity 0.7s, filter 0.5s;
+      filter: brightness(1);
+      pointer-events: none;
+    }
+    .mirror-message.active {
+      opacity: 1;
+      filter: brightness(1.2) drop-shadow(0 0 8px #fff6);
+      animation: pulse 1.2s;
+    }
+    @keyframes pulse {
+      0% { filter: brightness(1.2) scale(1.05);}
+      50% { filter: brightness(1.4) scale(1.12);}
+      100% { filter: brightness(1.2) scale(1.05);}
+    }
+    .mirror-verdict {
+      position: absolute;
+      bottom: 32px; left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      text-align: center;
+      font-size: 1.1em;
+      color: #d17cba;
+      font-weight: 700;
+      opacity: 0;
+      transition: opacity 1.5s;
+      z-index: 4;
+      pointer-events: none;
+    }
+    .mirror-verdict.active {
+      opacity: 1;
+      animation: shimmer 2.5s;
+    }
+    @keyframes shimmer {
+      0% { filter: brightness(1.2);}
+      50% { filter: brightness(1.5);}
+      100% { filter: brightness(1.2);}
+    }
+    .floating-emojis {
+      position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5;
+    }
+    .emoji {
+      position: absolute; font-size: 2em; opacity: 0.7;
+      animation: floatEmoji 8s linear infinite;
+    }
+    @keyframes floatEmoji {
+      0% { transform: translateY(0) scale(1);}
+      50% { transform: translateY(-40px) scale(1.2);}
+      100% { transform: translateY(0) scale(1);}
+    }
+    .sparkle-canvas {
+      position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; z-index: 6;
+    }
+    .mirror-title {
+      font-size: 2em; color: #7c4fd1; margin-bottom: 18px; text-shadow: 0 2px 12px #fff;
+    }
+    .mirror-music {
+      margin-top: 18px; color: #888; font-size: 0.95em;
+    }
+    .mirror-back {
+      margin-top: 38px;
+    }
+  </style>
+</head>
+<body>
+  <div class="mirror-container">
+    <div class="mirror-title">🪩 Virtual Mirror</div>
+    <div class="mirror-frame">
+      <div class="mirror-reflection"></div>
+      <canvas id="sparkleCanvas" class="sparkle-canvas"></canvas>
+      <div class="mirror-message" id="mirrorMsg"></div>
+      <div class="mirror-verdict" id="mirrorVerdict">Mirror’s verdict: iconic. Proceed to keep slaying.</div>
+      <div class="floating-emojis" id="floatingEmojis"></div>
+    </div>
+    <div class="mirror-music">Lo-fi ambient music playing...</div>
+    <a href="giftroom.html" class="btn mirror-back">&#8592; Back to Gift Room</a>
+    <audio id="mirrorAudio" src="https://cdn.pixabay.com/audio/2022/10/16/audio_12b7b8b7b7.mp3" loop autoplay></audio>
+  </div>
+  <script>
+    // Mirror messages
+    const messages = [
+      "Flaw detected: none.",
+      "System update complete — main character activated.",
+      "Mirror says you’re glowing harder than your phone at 2 AM.",
+      "Certified adult, uncertified chaos.",
+      "Error 404: imperfections not found.",
+      "You’re literally breaking the reflection algorithm rn.",
+      "Who gave you permission to look this good?",
+      "Vibes = immaculate. Confidence = loading (just kidding, already maxed).",
+      "18 and already confusing the universe — impressive.",
+      "This mirror is legally required to hype you up."
+    ];
+    let msgIndex = 0, msgCount = 0;
+    const mirrorMsg = document.getElementById('mirrorMsg');
+    const mirrorVerdict = document.getElementById('mirrorVerdict');
+    mirrorVerdict.style.opacity = 0;
+
+    function showMessage() {
+      mirrorMsg.textContent = messages[msgIndex];
+      mirrorMsg.classList.add('active');
+      setTimeout(() => {
+        mirrorMsg.classList.remove('active');
+      }, 2200);
+      msgIndex = (msgIndex + 1) % messages.length;
+      msgCount++;
+      // Show verdict after 6 messages
+      if (msgCount === 6) {
+        setTimeout(() => {
+          mirrorVerdict.classList.add('active');
+        }, 2500);
+        // Fade music
+        setTimeout(() => {
+          document.getElementById('mirrorAudio').volume = 0.3;
+        }, 3500);
+      }
+    }
+    // Rotate messages every 3.5s
+    showMessage();
+    let msgInterval = setInterval(() => {
+      showMessage();
+      // Flare effect
+      document.querySelector('.mirror-reflection').style.filter = "brightness(1.3)";
+      setTimeout(() => {
+        document.querySelector('.mirror-reflection').style.filter = "";
+      }, 900);
+    }, 3500);
+
+    // Floating emojis
+    const emojis = ["💫","✨","💅","🪩"];
+    const floatingEmojis = document.getElementById('floatingEmojis');
+    for (let i = 0; i < 7; i++) {
+      const span = document.createElement('span');
+      span.className = 'emoji';
+      span.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+      span.style.left = (Math.random()*80+10) + "%";
+      span.style.top = (Math.random()*80+10) + "%";
+      span.style.animationDelay = (Math.random()*6) + "s";
+      floatingEmojis.appendChild(span);
+    }
+
+    // Sparkle particles
+    const canvas = document.getElementById('sparkleCanvas');
+    const ctx = canvas.getContext('2d');
+    function resizeCanvas() {
+      canvas.width = 224;
+      canvas.height = 444;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    let sparkles = [];
+    function spawnSparkle() {
+      sparkles.push({
+        x: Math.random()*canvas.width,
+        y: canvas.height-10,
+        r: Math.random()*2+1,
+        vy: -Math.random()*1.5-0.5,
+        alpha: 1,
+        color: `hsl(${Math.random()*360},80%,80%)`
+      });
+    }
+    function drawSparkles() {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      for (let s of sparkles) {
+        ctx.globalAlpha = s.alpha;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, 2*Math.PI);
+        ctx.fillStyle = s.color;
+        ctx.fill();
+        s.y += s.vy;
+        s.alpha -= 0.012;
+      }
+      sparkles = sparkles.filter(s => s.alpha > 0);
+      if (Math.random() < 0.18) spawnSparkle();
+      requestAnimationFrame(drawSparkles);
+    }
+    drawSparkles();
+
+    // Music autoplay/fade
+    const audio = document.getElementById('mirrorAudio');
+    audio.volume = 0.7;
+    audio.play().catch(()=>{});
+  </script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+:root{
+  --bg:#0f1724;
+  --card:#0b1220cc;
+  --accent:#ff7ab6;
+  --muted:#9aa4b2;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Segoe UI,Arial;background:linear-gradient(180deg,#071025 0%, #081226 60%);color:#e6eef6;cursor:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><text y="24" font-size="24">💖</text></svg>') 16 16, auto;}
+.overlay{min-height:100vh;display:flex;align-items:center;justify-content:center}
+.portal-card{background:radial-gradient(circle at 10% 10%, rgba(255,255,255,0.03), transparent),var(--card);padding:36px;border-radius:14px;backdrop-filter:blur(6px);text-align:center;max-width:760px;margin:24px;position:relative}
+h1{font-size:32px;margin:0 0 8px}
+.tag{color:var(--muted);margin-bottom:18px}
+.controls{display:flex;gap:12px;justify-content:center;margin-bottom:8px}
+.btn{background:transparent;border:1px solid rgba(255,255,255,0.08);color:inherit;padding:10px 14px;border-radius:10px;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),#7af2ff);color:#06111a;border:none;box-shadow:0 6px 18px rgba(0,0,0,0.4)}
+.small{font-size:13px;color:var(--muted)}
+.confetti{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none}
+.sparkle{position:absolute;pointer-events:none;font-size:22px;z-index:999;animation:sparkleFade .6s linear;will-change:transform,opacity;}
+@keyframes sparkleFade{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(0.6) translateY(-18px);}}
+
+/* Banner shown at page open for 10s */
+.banner{position:absolute;left:50%;transform:translateX(-50%);top:-80px;background:linear-gradient(90deg,var(--accent),#7af2ff);color:#06111a;padding:16px 30px;border-radius:12px;font-weight:800;letter-spacing:1px;font-size:20px;box-shadow:0 16px 40px rgba(0,0,0,0.55);opacity:0;transition:opacity .3s,top .4s;z-index:80}
+.banner.show{opacity:1;top:18px;animation:banner-sway 6s ease-in-out infinite}
+
+/* portal top layout: photo frame + text */
+.portal-top{display:flex;gap:18px;align-items:center;justify-content:center;margin-bottom:18px}
+.photo-frame{width:180px;height:180px;border-radius:12px;overflow:hidden;padding:6px;background:linear-gradient(180deg,rgba(255,255,255,0.03),transparent);box-shadow:0 8px 32px rgba(0,0,0,0.55)}
+.photo-frame img{width:100%;height:100%;object-fit:cover;display:block}
+.portal-text{text-align:left}
+
+/* Gift room */
+.gr-header{display:flex;justify-content:space-between;align-items:center;padding:18px 28px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);}
+.room{padding:40px;text-align:center}
+
+/* Intro letter above gifts */
+.intro-letter{display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:0;}
+.letter-card{background:linear-gradient(120deg,#ffd36b 40%,#ff7ab6 100%);color:#06111a;padding:32px 28px 18px 28px;border-radius:18px;box-shadow:0 8px 32px rgba(0,0,0,0.12);max-width:520px;margin:0 auto 0 auto;text-align:left;font-size:18px;line-height:1.5;}
+.letter-card h2{margin-top:0;margin-bottom:12px;font-size:26px;}
+.scroll-cue{margin:18px 0 0 0;font-size:22px;color:#ff7ab6;text-align:center;letter-spacing:1px;animation:scrollCueAnim 1.8s infinite alternate;}
+@keyframes scrollCueAnim{0%{opacity:0.7;transform:translateY(0)}100%{opacity:1;transform:translateY(10px)}}
+
+/* Grid layout for gifts */
+.gifts{display:flex;flex-wrap:wrap;gap:28px;justify-content:center;margin-top:28px}
+.gift.giftbox{width:120px;height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;transition:transform .28s,box-shadow .28s;}
+.giftbox .box-lid{width:80px;height:28px;background:#fff;border-radius:8px 8px 0 0;box-shadow:0 2px 8px rgba(0,0,0,0.12);position:absolute;top:18px;left:20px;z-index:2;}
+.giftbox .box-base{width:80px;height:56px;border-radius:0 0 10px 10px;box-shadow:0 8px 24px rgba(0,0,0,0.18);position:absolute;top:46px;left:20px;z-index:1;}
+.gift-emoji{font-size:32px;position:absolute;top:0;left:50%;transform:translateX(-50%);z-index:3;}
+.gift-label{font-size:15px;margin-top:90px;color:#fff;text-shadow:0 2px 8px #000,0 0 2px #fff;font-weight:600;letter-spacing:0.5px;position:relative;z-index:4;}
+.gift.giftbox:hover{transform:scale(1.08) rotate(-2deg);z-index:3;box-shadow:0 18px 36px rgba(0,0,0,0.18);}
+.gift.wiggle{animation:wiggle 1.6s ease-in-out infinite;}
+
+/* Unique colors for each gift */
+.color1 .box-base{background:linear-gradient(180deg,#ff7ab6 60%,#ffd36b 100%)}
+.color1 .box-lid{background:#ff7ab6}
+.color2 .box-base{background:linear-gradient(180deg,#7af2ff 60%,#9bffb3 100%)}
+.color2 .box-lid{background:#7af2ff}
+.color3 .box-base{background:linear-gradient(180deg,#ffd36b 60%,#ff7ab6 100%)}
+.color3 .box-lid{background:#ffd36b}
+.color4 .box-base{background:linear-gradient(180deg,#c7b3ff 60%,#7af2ff 100%)}
+.color4 .box-lid{background:#c7b3ff}
+.color5 .box-base{background:linear-gradient(180deg,#9bffb3 60%,#ffd36b 100%)}
+.color5 .box-lid{background:#9bffb3}
+.color6 .box-base{background:linear-gradient(180deg,#ff7ab6 60%,#c7b3ff 100%)}
+.color6 .box-lid{background:#c7b3ff}
+.color7 .box-base{background:linear-gradient(180deg,#ffd36b 60%,#7af2ff 100%)}
+.color7 .box-lid{background:#ffd36b}
+.color8 .box-base{background:linear-gradient(180deg,#c7b3ff 60%,#9bffb3 100%)}
+.color8 .box-lid{background:#9bffb3}
+.color9 .box-base{background:linear-gradient(180deg,#7af2ff 60%,#ff7ab6 100%)}
+.color9 .box-lid{background:#7af2ff}
+.color10 .box-base{background:linear-gradient(180deg,#ff7ab6 60%,#c7b3ff 100%)}
+.color10 .box-lid{background:#ff7ab6}
+.gift.secret .box-base{border:2px dashed #fff}
+.gift.secret .box-lid{border:2px dashed #fff}
+
+
+/* wiggle until clicked */
+.gift.wiggle{animation:wiggle 1.6s ease-in-out infinite}
+@keyframes wiggle{0%{transform:translateY(0)}25%{transform:translateY(-6px) rotate(-1deg)}50%{transform:translateY(0)}75%{transform:translateY(-6px) rotate(1deg)}100%{transform:translateY(0)}}
+
+/* progress and emoji cloud */
+.room-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px}
+.progress{color:var(--muted);font-weight:600}
+.progress-bar{background:rgba(255,255,255,0.04);height:10px;border-radius:8px;overflow:hidden;width:180px;margin-top:6px}
+#progressFill{height:100%;background:linear-gradient(90deg,#9bffb3,#7af2ff)}
+.emoji-cloud{font-size:18px;color:#ffd36b}
+
+/* cursor sparkles */
+.sparkle{position:fixed;pointer-events:none;z-index:200}
+
+/* balloons */
+.balloon{position:fixed;left:20%;bottom:-120px;opacity:0.9;font-size:48px;transform:translateY(0);animation:floatUp 10s linear infinite}
+@keyframes floatUp{0%{transform:translateY(0)}100%{transform:translateY(-140vh);opacity:0}}
+
+/* button hover text change (small) */
+.btn:hover{transform:translateY(-2px)}
+.btn.upload-btn{position:relative;overflow:hidden}
+.btn.upload-btn input{position:absolute;left:0;top:0;opacity:0}
+
+.modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(rgba(2,6,23,0.6),rgba(2,6,23,0.6));z-index:60}
+.modal.hidden{display:none}
+.modal-inner{background:#081126;padding:22px;border-radius:12px;max-width:820px;width:92%;color:#e9f2ff;position:relative}
+.close{position:absolute;right:12px;top:10px;background:transparent;border:none;color:var(--muted);font-size:20px;cursor:pointer}
+
+/* responsive */
+@media (max-width:520px){.gift{width:100px;height:100px;font-size:28px}}
+@media (max-width:600px){.portal-top{flex-direction:column}.portal-text{text-align:center}}
+
+@keyframes banner-sway{
+  0%{transform:translateX(-50%) translateY(0)}
+  25%{transform:translateX(-48%) translateY(0)}
+  50%{transform:translateX(-50%) translateY(0)}
+  75%{transform:translateX(-52%) translateY(0)}
+  100%{transform:translateX(-50%) translateY(0)}
+}

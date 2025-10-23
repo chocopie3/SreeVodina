@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Gift Room — Virtually Yours</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="giftroom">
+  <header class="gr-header">
+    <h1>Your Gift Room 🎁</h1>
+    <div class="header-controls">
+      <a href="index.html" class="btn">Back</a>
+      <button id="muteBtn" class="btn">Mute</button>
+    </div>
+  </header>
+
+  <main class="room">
+    <p class="intro">HAPPY BIRTHDAY SREEVATSA VODINA!!!! 🎈✨</p>
+
+    <div class="room-top">
+      <div class="progress">Maturity Level: <span id="maturity">18% (out of 100%)</span>
+        <div class="progress-bar"><div id="progressFill" style="width:18%"></div></div>
+      </div>
+      <div class="emoji-cloud">🎉 🪩 ✨</div>
+    </div>
+
+    <section class="intro-letter">
+      <div class="letter-card">
+        <h2>Dear Sreevatsa Vodina,</h2>
+        <p>Happy Birthday! 🎉<br>
+        I just wanted to say that because u r adult, doesn't mean u dont play with me ok?<br><br> I'm not a proffessional at making websites so don't judge!<br><br>
+        Anyway, Happy 18th! You’re officially a certified adult and u owe me a car ride (for no reason). BTW, i made this whole thing by myself for you!<br>
+        — With love, Harshini</p>
+      </div>
+    </section>
+    <div class="scroll-cue">⬇️ Scroll for 🎁 ⬇️</div>
+      <div class="gift giftbox color2" data-gift="wallpapers">
+        <div class="box-lid"></div>
+        <div class="box-base"></div>
+        <span class="gift-emoji">🖼️</span>
+        <span class="gift-label"><a href="wallpapers.html" class="btn" id="wallpapersBtn">Wallpapers</a></span>
+      </div>
+      <div class="gift giftbox color3" data-gift="slideshow">
+        <div class="box-lid"></div>
+        <div class="box-base"></div>
+        <span class="gift-emoji">📼</span>
+        <span class="gift-label"><a href="slideshow.html" class="btn" id="slideshowBtn">Memory Tape</a></span>
+      </div>
+      <div class="gift giftbox color4" data-gift="quiz">
+        <div class="box-lid"></div>
+        <div class="box-base"></div>
+        <span class="gift-emoji">🧠</span>
+        <span class="gift-label"><a href="quiz.html" class="btn" id="quizBtn">Adulting Quiz</a></span>
+      </div>
+      <div class="gift giftbox color5" data-gift="candle">
+        <div class="box-lid"></div>
+        <div class="box-base"></div>
+        <span class="gift-emoji">🕯️</span>
+        <span class="gift-label"><a href="candle.html" class="btn" id="candleBtn">Candle</a></span>
+      </div>
+      <div class="gift giftbox color7" data-gift="mirror">
+        <div class="box-lid"></div>
+        <div class="box-base"></div>
+        <span class="gift-emoji">🪞</span>
+        <span class="gift-label"><a href="mirror.html" class="btn" id="mirrorBtn">Virtual Mirror</a></span>
+      </div>
+      <div class="gift giftbox color8" data-gift="fortune">
+        <div class="box-lid"></div>
+        <div class="box-base"></div>
+        <span class="gift-emoji">🥠</span>
+        <span class="gift-label"><a href="fortune.html" class="btn" id="fortuneBtn">Fortune Cookies</a></span>
+      </div>
+      <div class="gift giftbox color10 secret" data-gift="secret">
+        <div class="box-lid"></div>
+        <div class="box-base"></div>
+        <span class="gift-emoji">🎲</span>
+        <span class="gift-label"><a href="secret.html" class="btn" id="secretBtn">Secret Surprise</a></span>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modals -->
+  <div id="modal" class="modal hidden" role="dialog" aria-hidden="true">
+    <div class="modal-inner">
+      <button id="closeModal" class="close">✕</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <canvas id="confettiCanvas2" class="confetti"></canvas>
+  <script src="assets/script.js"></script>
+</body>
+</html>

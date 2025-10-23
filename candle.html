@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Digital Birthday Candle 🕯️</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    .candle-container {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh;
+    }
+    .candle-graphic {
+      position: relative; width: 80px; height: 180px; margin-bottom: 20px;
+    }
+    .candle-body {
+      width: 40px; height: 120px; background: #fffbe6; border-radius: 20px; border: 2px solid #e2c275; position: absolute; bottom: 0; left: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .flame {
+      position: absolute; top: 10px; left: 32px; width: 16px; height: 28px; opacity: 0; transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .flame.lit {
+      opacity: 1;
+      animation: flicker 0.18s infinite;
+    }
+    @keyframes flicker {
+      0% { transform: scaleY(1) scaleX(1); filter: blur(0px);}
+      30% { transform: scaleY(1.1) scaleX(0.95); filter: blur(0.5px);}
+      60% { transform: scaleY(0.95) scaleX(1.05); filter: blur(0.2px);}
+      100% { transform: scaleY(1) scaleX(1); filter: blur(0px);}
+    }
+    .puff {
+      position: absolute; top: 0; left: 28px; width: 24px; height: 24px; opacity: 0;
+      pointer-events: none;
+      animation: puffAnim 1s forwards;
+    }
+    @keyframes puffAnim {
+      0% { opacity: 0; transform: scale(0.5);}
+      40% { opacity: 1; transform: scale(1.2);}
+      100% { opacity: 0; transform: scale(2);}
+    }
+    .confetti-candle {
+      position: absolute; left: 50%; top: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 10;
+    }
+    .candle-btn { margin: 20px 0; }
+    .candle-message, .candle-easter { margin-top: 18px; font-size: 1.1em; text-align: center; }
+    .candle-easter { color: #c77d2c; font-style: italic; }
+  </style>
+</head>
+<body>
+  <div class="candle-container">
+    <h2>🕯️ The Digital Birthday Candle</h2>
+    <div class="candle-graphic">
+      <div class="candle-body"></div>
+      <svg class="flame" id="flame" viewBox="0 0 16 28">
+        <ellipse cx="8" cy="14" rx="7" ry="13" fill="#ffd700" />
+        <ellipse cx="8" cy="10" rx="4" ry="7" fill="#ff9900" />
+        <ellipse cx="8" cy="8" rx="2" ry="4" fill="#fffbe6" />
+      </svg>
+      <svg class="puff" id="puff" viewBox="0 0 24 24">
+        <ellipse cx="12" cy="12" rx="10" ry="8" fill="#e0e0e0" />
+      </svg>
+      <canvas id="confettiCandle" class="confetti-candle"></canvas>
+    </div>
+    <button class="btn candle-btn" id="lightBtn">Light it!</button>
+    <div class="candle-message" id="candleMsg"></div>
+    <div class="candle-easter" id="candleEaster"></div>
+    <a href="giftroom.html" class="btn" style="margin-top:30px;">&#8592; Back to Gift Room</a>
+  </div>
+  <script>
+    // Candle messages
+    const messages = [
+      // Playful
+      "Make a wish… or at least pretend you’re not thinking about cake 🍰",
+      "Wish granted. Probably.",
+      "Congrats, you’ve successfully lit adulthood 🔥",
+      "You’re 18 now. Blow this out before responsibilities catch fire.",
+      // Sarcastic
+      "Don’t worry, it’s a virtual flame — no adult supervision required.",
+      "This candle represents your will to be productive. Good luck keeping it lit.",
+      "Making a wish? Better make it a good one; candles aren’t cheap in adulthood.",
+      // Thoughtful
+      "Make a wish — or don’t. You’re the boss now.",
+      "Your 18th wish is officially live.",
+      "Light’s on you — literally."
+    ];
+    const easterEggs = [
+      "You didn’t wish for cake, did you?",
+      "Nice. Now you’re legally an adult pyromaniac."
+    ];
+    const flame = document.getElementById('flame');
+    const puff = document.getElementById('puff');
+    const lightBtn = document.getElementById('lightBtn');
+    const candleMsg = document.getElementById('candleMsg');
+    const candleEaster = document.getElementById('candleEaster');
+    let lit = false, blown = false;
+
+    // Confetti
+    function confettiBurst() {
+      const canvas = document.getElementById('confettiCandle');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      let particles = [];
+      for (let i = 0; i < 40; i++) {
+        particles.push({
+          x: canvas.width/2, y: 180,
+          r: Math.random()*7+4,
+          c: `hsl(${Math.random()*360},90%,60%)`,
+          vx: (Math.random()-0.5)*8,
+          vy: -Math.random()*8-4,
+          g: 0.25+Math.random()*0.1
+        });
+      }
+      let frame = 0;
+      function draw() {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        for (let p of particles) {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, 2*Math.PI);
+          ctx.fillStyle = p.c;
+          ctx.fill();
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += p.g;
+        }
+        frame++;
+        if (frame < 60) requestAnimationFrame(draw);
+        else ctx.clearRect(0,0,canvas.width,canvas.height);
+      }
+      draw();
+    }
+
+    // Light candle
+    lightBtn.onclick = function() {
+      if (lit || blown) return;
+      lit = true;
+      flame.classList.add('lit');
+      candleMsg.textContent = messages[Math.floor(Math.random()*messages.length)];
+      confettiBurst();
+      // Blow out after 3.5s
+      setTimeout(() => {
+        flame.classList.remove('lit');
+        puff.style.opacity = 1;
+        puff.style.animation = "puffAnim 1s forwards";
+        blown = true;
+        setTimeout(() => {
+          puff.style.opacity = 0;
+          candleMsg.textContent = "";
+          candleEaster.textContent = easterEggs[Math.floor(Math.random()*easterEggs.length)];
+        }, 1200);
+      }, 3500);
+    };
+
+    // Flicker on hover
+    flame.addEventListener('mouseenter', () => {
+      if (lit && !blown) flame.style.filter = "brightness(1.2)";
+    });
+    flame.addEventListener('mouseleave', () => {
+      flame.style.filter = "";
+    });
+  </script>
+</body>
+</html>

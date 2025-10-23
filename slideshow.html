@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Memory Tape 📼</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    body {
+      background: linear-gradient(120deg, #f8e7c6 0%, #e7d6ff 100%);
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Segoe UI', 'Arial', sans-serif;
+      overflow-x: hidden;
+    }
+    .tape-container {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh;
+      position: relative;
+    }
+    .tape-title {
+      font-size: 2em; color: #c77d2c; margin-bottom: 18px; text-shadow: 0 2px 12px #fff;
+      font-weight: 700;
+    }
+    .tape-area {
+      position: relative; width: 340px; height: 260px; margin-bottom: 24px;
+      display: flex; align-items: center; justify-content: center;
+      background: #fffbe6cc; border-radius: 24px; box-shadow: 0 4px 24px #e7d6ff44;
+      overflow: hidden;
+    }
+    .tape-img {
+      width: 320px; height: 220px; object-fit: cover; border-radius: 18px; box-shadow: 0 2px 12px #c77d2c44;
+      transition: box-shadow 0.4s, transform 0.4s;
+      background: #e7d6ff;
+    }
+    .tape-arrow {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      font-size: 2.2em; color: #c77d2c; background: #fffbe6cc; border-radius: 50%; width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center; cursor: pointer; user-select: none;
+      box-shadow: 0 2px 8px #e7d6ff44;
+      transition: background 0.2s;
+      z-index: 2;
+    }
+    .tape-arrow:hover { background: #e7d6ffcc; }
+    .tape-arrow.left { left: 8px; }
+    .tape-arrow.right { right: 8px; }
+    .tape-caption {
+      margin-top: 12px; font-size: 1.08em; color: #c77d2c; text-align: center; font-weight: 500;
+      background: #fffbe6cc; border-radius: 12px; padding: 6px 18px; box-shadow: 0 2px 8px #e7d6ff44;
+      min-height: 32px;
+    }
+    .tape-back {
+      margin-top: 38px;
+    }
+    .tape-anim {
+      animation: tapeMove 1.2s;
+    }
+    @keyframes tapeMove {
+      0% { transform: scale(0.98) translateY(12px);}
+      50% { transform: scale(1.03) translateY(-8px);}
+      100% { transform: scale(1) translateY(0);}
+    }
+  </style>
+</head>
+<body>
+  <div class="tape-container">
+    <div class="tape-title">📼 Memory Tape</div>
+    <div class="tape-area">
+      <div class="tape-arrow left" id="arrowLeft">&#8592;</div>
+      <img src="images/flower.jpg" alt="Memory 1" class="tape-img tape-anim" id="tapeImg">
+      <div class="tape-arrow right" id="arrowRight">&#8594;</div>
+    </div>
+    <div class="tape-caption" id="tapeCaption">HAPPY BIRTHDAY!</div>
+    <a href="giftroom.html" class="btn tape-back">&#8592; Back to Gift Room</a>
+  </div>
+  <script>
+    // Images and captions (add more as needed)
+    const images = [
+      { src: "images/happy_bday_dogs.jpg", caption: "HAPPY BIRTHDAY!" },
+      { src: "images/20250315_182545.jpg", caption: "HAPPY BIRTHDAY!" },
+      { src: "images/20250316_093940.jpg", caption: "HAPPY BIRTHDAY!" }
+      // Add more images/captions here if you want!
+    ];
+    let idx = 0;
+    const tapeImg = document.getElementById('tapeImg');
+    const tapeCaption = document.getElementById('tapeCaption');
+    const arrowLeft = document.getElementById('arrowLeft');
+    const arrowRight = document.getElementById('arrowRight');
+
+    function showImg(i) {
+      tapeImg.classList.remove('tape-anim');
+      setTimeout(() => {
+        tapeImg.src = images[i].src;
+        tapeImg.alt = images[i].caption;
+        tapeCaption.textContent = images[i].caption;
+        tapeImg.classList.add('tape-anim');
+      }, 120);
+    }
+
+    arrowLeft.onclick = () => {
+      idx = (idx - 1 + images.length) % images.length;
+      showImg(idx);
+    };
+    arrowRight.onclick = () => {
+      idx = (idx + 1) % images.length;
+      showImg(idx);
+    };
+  </script>
+</body>
+</html>
